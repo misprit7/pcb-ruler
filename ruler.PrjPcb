@@ -43,6 +43,7 @@ CrossRefPorts=3
 CrossRefCrossSheets=1
 CrossRefSheetEntries=0
 CrossRefFollowFromMainSettings=1
+CurrentVariant=assembly
 
 [Preferences]
 PrefsVaultGUID=
@@ -81,6 +82,15 @@ ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=ALUJKCPQ
+
+[ProjectVariant1]
+UniqueID=65671B1D-EAA1-4991-A63A-97140E18544C
+Description=assembly
+AllowFabrication=0
+ParameterCount=0
+VariationCount=1
+Variation1=Designator=P1|UniqueId=\NRSRZXSW|Kind=1|AlternatePart= 
+ParamVariationCount=0
 
 [Configuration1]
 Name=Sources
