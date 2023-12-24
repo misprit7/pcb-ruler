@@ -1,21 +1,28 @@
 #include <Arduino.h>
 
+#define PIN 14
+
 void setup(){
-    pinMode(LED_BUILTIN, OUTPUT);
+    pinMode(PIN, OUTPUT);
+    digitalWrite(PIN, LOW);
+    /* Serial.begin(9600); */
+    /* Serial.println("Starting!"); */
 }
 
 void loop()
 {
-  // turn the LED on (HIGH is the voltage level)
-  digitalWrite(LED_BUILTIN, HIGH);
+    // turn the LED on (HIGH is the voltage level)
+    digitalWrite(PIN, HIGH);
+    /* Serial.println("Blink!"); */
 
-  // wait for a second
-  delay(1000);
+    // wait for a second
+    delay(1000);
 
-  // turn the LED off by making the voltage LOW
-  digitalWrite(LED_BUILTIN, LOW);
+    /* Serial.println("Blink!"); */
+    // turn the LED off by making the voltage LOW
+    digitalWrite(PIN, LOW);
 
    // wait for a second
-  delay(1000);
+    delay(1000);
 }
 
