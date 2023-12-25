@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "HID-APIs/ConsumerAPI.h"
 #include "HID-Project.h"
 #include "Adafruit_FreeTouch.h"
 #include "adafruit_ptc.h"
@@ -13,8 +14,6 @@
 #define TOUCH_OVERSAMPLE OVERSAMPLE_4
 #define TOUCH_RES RESISTOR_0
 #define TOUCH_FREQ FREQ_MODE_NONE
-
-#define TOUCH_THRESH 100
 
 Adafruit_FreeTouch qt[16] = {
     Adafruit_FreeTouch(PORTA, 2, TOUCH_OVERSAMPLE, TOUCH_RES, TOUCH_FREQ),
@@ -51,6 +50,25 @@ String keys[13] = {
     "c",
 };
 
+int thresh[16] = {
+    1200,
+    1000,
+    1000,
+    1000,
+    1000,
+    1000,
+    1000,
+    1000,
+    1000,
+    1000,
+    1000,
+    1000,
+    1000,
+    800,
+    800,
+    800,
+};
+
 int touch_baselines[16];
 
 int held_dur[16] = {0};
@@ -59,6 +77,7 @@ bool sent[16] = {false};
 double slider_pos = -1;
 int slider_dir = 0;
 double slider_len = 0;
+int last_press = 0;
 
 // https://github.com/adafruit/circuitpython/blob/main/ports/atmel-samd/common-hal/touchio/TouchIn.c#L114
 void touchin_reset() {
@@ -99,19 +118,21 @@ void setup(){
     }
     /* while(!SerialUSB.available()); */
     Keyboard.begin();
+    Consumer.begin();
 }
 
 void loop()
 {
     /* Keyboard.write('Y'); */
     /* delay(1000); */
-    for(int i = 0; i < 16; ++i){
+    for(int i = 1; i < 16; ++i){
         touchin_reset();
         qt[i].begin(); 
         int result = qt[i].measure(); 
-        /* SerialUSB.print(result); */
-        /* SerialUSB.print(", "); */
-        if(abs(result - touch_baselines[i]) > TOUCH_THRESH) {
+        SerialUSB.print(result);
+        SerialUSB.print(", ");
+        /* if(abs(result - touch_baselines[i]) > TOUCH_THRESH) { */
+        if(result > 1000) {
             held_dur[i] = min(held_dur[i]+1, 5);
 
             /* SerialUSB.println(held_dur[i]); */
@@ -180,10 +201,18 @@ void loop()
         digitalWrite(LED_R, HIGH);
         digitalWrite(LED_G, HIGH);
         digitalWrite(LED_B, LOW);
+        if(millis() - last_press > 150){
+            Consumer.write(slider_dir == 1 ? MEDIA_VOLUME_UP : MEDIA_VOLUME_DOWN);
+            last_press = millis();
+        }
     } else if(slider_len > 4){
         digitalWrite(LED_R, slider_dir == 1 ? HIGH : LOW);
         digitalWrite(LED_G, slider_dir == 1 ? LOW : HIGH);
         digitalWrite(LED_B, HIGH);
+        if(millis() - last_press > 75){
+            Consumer.write(slider_dir == 1 ? MEDIA_VOLUME_UP : MEDIA_VOLUME_DOWN);
+            last_press = millis();
+        }
     } else {
         digitalWrite(LED_R, HIGH);
         digitalWrite(LED_G, HIGH);
@@ -202,7 +231,7 @@ void loop()
     digitalWrite(LED_W, key_pressed ? LOW : HIGH);
 
     SerialUSB.println();
-    /* delay(5); */
-    delay(10);
+    delay(5);
+    /* delay(10); */
 }
 
