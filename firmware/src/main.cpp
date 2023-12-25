@@ -129,8 +129,8 @@ void loop()
         touchin_reset();
         qt[i].begin(); 
         int result = qt[i].measure(); 
-        SerialUSB.print(result);
-        SerialUSB.print(", ");
+        /* SerialUSB.print(result); */
+        /* SerialUSB.print(", "); */
         /* if(abs(result - touch_baselines[i]) > TOUCH_THRESH) { */
         if(result > 1000) {
             held_dur[i] = min(held_dur[i]+1, 5);
@@ -230,7 +230,7 @@ void loop()
     /* SerialUSB.print(key_pressed); */
     digitalWrite(LED_W, key_pressed ? LOW : HIGH);
 
-    SerialUSB.println();
+    /* SerialUSB.println(); */
     delay(5);
     /* delay(10); */
 }
